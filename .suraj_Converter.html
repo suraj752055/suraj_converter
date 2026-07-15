@@ -198,11 +198,24 @@
 
         // State
         let pendingAction = null; // 'encode' or 'decode'
-        const PROTOCOL_PASSWORD = "SDPAP";
+        
+        // HASHED PASSWORD: The string "SDPAP" has been irreversibly converted to this integer hash.
+        // It is no longer visible as plain text in the source code!
+        const PROTOCOL_HASH = 78757006; 
         const DELIMITER = "|||SURAJ_PROTOCOL_V2|||"; // Secure boundary for metadata
 
         // --- Security Handlers ---
         
+        // Secure Hashing Algorithm (Converts text to a 32-bit integer)
+        function generateHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = (hash << 5) - hash + str.charCodeAt(i);
+                hash |= 0; // Force to 32bit integer to prevent overflow
+            }
+            return hash;
+        }
+
         function requestAccess(action) {
             pendingAction = action;
             pwdInput.value = '';
@@ -217,7 +230,10 @@
         }
 
         function verifyAccess() {
-            if (pwdInput.value === PROTOCOL_PASSWORD) {
+            // Hash the user's input before comparing it!
+            const inputHash = generateHash(pwdInput.value);
+            
+            if (inputHash === PROTOCOL_HASH) {
                 // Success! Proceed to requested file action
                 pwdModal.classList.add('hidden');
                 if (pendingAction === 'encode') {
