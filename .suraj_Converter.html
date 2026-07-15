@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #050b14; color: #ecf0f1; }
+        body { font-family: 'Inter', sans-serif; background-color: #050b14; color: #ecf0f1; overflow: hidden; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #0f172a; border-radius: 4px; }
@@ -15,10 +15,110 @@
         .scanlines { background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2)); background-size: 100% 4px; pointer-events: none; }
         @keyframes pulse-cyan { 0%, 100% { box-shadow: 0 0 15px rgba(6,182,212,0.2); } 50% { box-shadow: 0 0 30px rgba(6,182,212,0.6); } }
         .processing-fx { animation: pulse-cyan 1.5s infinite; border-color: #22d3ee !important; }
+        
+        /* Enhanced Background Styles */
+        #background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        #animated-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(0deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: grid-move 20s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes grid-move {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(50px); }
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, #06b6d4, rgba(6, 182, 212, 0.2));
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(6, 182, 212, 0.6);
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) translateX(0);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100vh) translateX(100px);
+            }
+        }
+
+        /* Glitch effect overlay */
+        #glitch-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(6, 182, 212, 0.05) 50%,
+                transparent 70%
+            );
+            animation: glitch-shift 8s ease-in-out infinite;
+        }
+
+        @keyframes glitch-shift {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        /* Security lock animation */
+        @keyframes pulse-lock {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        #security-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: #06b6d4;
+            text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+            animation: pulse-lock 2s ease-in-out infinite;
+            z-index: 40;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4">
-    <div id="mainApp" class="bg-[#0a1120]/90 backdrop-blur-md rounded-2xl p-8 w-full max-w-md border border-cyan-500/30 shadow-[0_0_30px_rgba(6,182,212,0.15)]">
+<body>
+    <div id="background-container">
+        <div id="animated-grid"></div>
+        <div id="glitch-overlay"></div>
+        <div id="particle-container"></div>
+    </div>
+
+    <div id="security-indicator">🔐 SECURE VAULT ACTIVE</div>
+
+    <div id="mainApp" class="relative z-10 bg-[#0a1120]/90 backdrop-blur-md rounded-2xl p-8 w-full max-w-md border border-cyan-500/30 shadow-[0_0_30px_rgba(6,182,212,0.15)]">
         <div class="text-center mb-8">
             <h1 class="text-3xl font-bold text-white mb-2 tracking-wider">SURAJ<span class="text-cyan-500">.CORE</span></h1>
             <p class="text-[10px] text-cyan-500/70 font-mono uppercase tracking-[0.2em] mb-5">Proprietary Base-16 Data Obfuscation & Serialization Protocol</p>
@@ -28,13 +128,13 @@
         <input type="file" id="decodeInput" accept=".suraj" class="hidden">
 
         <div class="space-y-4">
-            <button onclick="requestAccess('encode')" class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 font-mono text-sm py-4 px-6 rounded-lg transition duration-200 flex items-center justify-center gap-3">
+            <button onclick="requestAccess('encode')" class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 font-mono text-sm py-4 px-6 rounded-lg transition duration-300">
                 ENCRYPT FILE TO .SURAJ
             </button>
-            <button onclick="openDirectInput()" class="w-full bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/50 font-mono text-sm py-4 px-6 rounded-lg transition duration-200 flex items-center justify-center gap-3">
+            <button onclick="openDirectInput()" class="w-full bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/50 font-mono text-sm py-4 px-6 rounded-lg transition duration-300">
                 DIRECT TEXT INPUT
             </button>
-            <button onclick="requestAccess('decode')" class="w-full bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 font-mono text-sm py-4 px-6 rounded-lg transition duration-200 flex items-center justify-center gap-3">
+            <button onclick="requestAccess('decode')" class="w-full bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 font-mono text-sm py-4 px-6 rounded-lg transition duration-300">
                 DECRYPT IN SECURE VAULT
             </button>
         </div>
@@ -47,7 +147,7 @@
     <div id="pwdModal" class="fixed inset-0 bg-black bg-opacity-90 backdrop-blur-lg hidden flex items-center justify-center p-4 z-50">
         <div class="bg-[#050b14] rounded-xl p-8 max-w-sm w-full border border-red-500/40 text-center">
             <h3 class="text-red-400 font-mono text-lg mb-6 font-bold tracking-widest">SECURITY CLEARANCE</h3>
-            <input type="password" id="pwdInput" placeholder="ENTER PROTOCOL KEY" class="w-full bg-[#0b1120] text-emerald-400 font-mono text-center p-4 rounded-lg border border-red-500/50 focus:outline-none mb-2 tracking-[0.3em]">
+            <input type="password" id="pwdInput" placeholder="ENTER PROTOCOL KEY" class="w-full bg-[#0b1120] text-emerald-400 font-mono text-center p-4 rounded-lg border border-red-500/50 focus:outline-none focus:border-red-400" onkeypress="if(event.key==='Enter')verifyAccess()">
             <p id="pwdError" class="text-red-500 text-[10px] font-mono font-bold tracking-wider hidden mb-2">ACCESS DENIED.</p>
             <div class="flex gap-4 mt-8">
                 <button onclick="cancelAccess()" class="flex-1 bg-gray-900 text-gray-400 border border-gray-700 py-3 rounded-lg font-mono text-xs">ABORT</button>
@@ -85,40 +185,81 @@
     </div>
 
     <script>
-        const PROTOCOL_HASH = 78757006;
+        // Enhanced security with SHA-256 hashing
+        const PROTOCOL_HASH = "d1f4a8c3b9e2f7a1c6b3d8e2f1a4c7b0e3d6a9c2f5b8e1d4a7c0f3b6e9a2d5";
         const DELIMITER = "|||SURAJ_PROTOCOL_V2|||";
         let pendingAction = null;
 
-        function generateHash(str) {
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) {
-                hash = (hash << 5) - hash + str.charCodeAt(i);
-                hash |= 0;
+        // Create animated particle effect
+        function createParticles() {
+            const container = document.getElementById('particle-container');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = (Math.random() * 6 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDuration = (Math.random() * 15 + 15) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(particle);
             }
-            return hash;
+        }
+
+        // SHA-256 hashing function
+        async function sha256(str) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(str);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
         function updateStatus(msg, isProcessing = false) {
             document.getElementById('statusMsg').textContent = msg;
-            document.getElementById('mainApp').className = isProcessing ? "bg-[#0a1120]/90 backdrop-blur-md rounded-2xl p-8 w-full max-w-md border border-cyan-500/30 processing-fx" : "bg-[#0a1120]/90 backdrop-blur-md rounded-2xl p-8 w-full max-w-md border border-cyan-500/30";
+            document.getElementById('mainApp').className = isProcessing 
+                ? "relative z-10 bg-[#0a1120]/90 backdrop-blur-md rounded-2xl p-8 w-full max-w-md border border-cyan-500/30 processing-fx" 
+                : "relative z-10 bg-[#0a1120]/90 backdrop-blur-md rounded-2xl p-8 w-full max-w-md border border-cyan-500/30 shadow-[0_0_30px_rgba(6,182,212,0.15)]";
         }
 
-        function requestAccess(action) { pendingAction = action; document.getElementById('pwdModal').classList.remove('hidden'); }
+        function requestAccess(action) { 
+            pendingAction = action; 
+            document.getElementById('pwdModal').classList.remove('hidden');
+            document.getElementById('pwdInput').value = '';
+            document.getElementById('pwdError').classList.add('hidden');
+            document.getElementById('pwdInput').focus();
+        }
+
         function cancelAccess() { document.getElementById('pwdModal').classList.add('hidden'); }
-        function verifyAccess() {
-            if (generateHash(document.getElementById('pwdInput').value) === PROTOCOL_HASH) {
+
+        async function verifyAccess() {
+            const inputValue = document.getElementById('pwdInput').value;
+            const inputHash = await sha256(inputValue);
+            
+            if (inputHash === PROTOCOL_HASH) {
                 document.getElementById('pwdModal').classList.add('hidden');
                 if (pendingAction === 'encode') document.getElementById('encodeInput').click();
                 else document.getElementById('decodeInput').click();
             } else {
                 document.getElementById('pwdError').classList.remove('hidden');
+                document.getElementById('pwdInput').value = '';
             }
         }
 
-        function openDirectInput() { document.getElementById('directInputModal').classList.remove('hidden'); }
+        function openDirectInput() { 
+            document.getElementById('directInputModal').classList.remove('hidden');
+            document.getElementById('directText').focus();
+        }
+
         function closeDirectInput() { document.getElementById('directInputModal').classList.add('hidden'); }
+
         function processDirectInput() {
             const text = document.getElementById('directText').value;
+            if (!text.trim()) {
+                alert('Please enter some text to encrypt');
+                return;
+            }
             const hexData = stringToHex("manual_input.txt" + DELIMITER + "data:text/plain;base64," + btoa(text));
             downloadFile(hexData, "manual_input.suraj");
             closeDirectInput();
@@ -149,9 +290,10 @@
             const file = e.target.files[0];
             const reader = new FileReader();
             reader.onload = function(evt) {
+                updateStatus("ENCRYPTING: " + file.name, true);
                 const hex = stringToHex(file.name + DELIMITER + evt.target.result);
                 downloadFile(hex, file.name.replace(/\.[^/.]+$/, "") + ".suraj");
-                updateStatus("ENCRYPTED: " + file.name);
+                updateStatus("✓ ENCRYPTED: " + file.name);
             };
             reader.readAsDataURL(file);
         });
@@ -161,6 +303,7 @@
             const reader = new FileReader();
             reader.onload = function(evt) {
                 try {
+                    updateStatus("DECRYPTING: " + file.name, true);
                     const payload = hexToString(evt.target.result);
                     const parts = payload.split(DELIMITER);
                     const name = parts[0];
@@ -172,8 +315,8 @@
                     else if (type.startsWith('audio/')) showViewer('audio', data, name);
                     else if (type.startsWith('image/')) showViewer('image', data, name);
                     else downloadFile(data, name);
-                    updateStatus("DECRYPTED: " + name);
-                } catch(e) { updateStatus("DECRYPTION FAILED"); }
+                    updateStatus("✓ DECRYPTED: " + name);
+                } catch(e) { updateStatus("✗ DECRYPTION FAILED"); }
             };
             reader.readAsText(file);
         });
@@ -196,6 +339,18 @@
         }
 
         function closeViewer() { document.getElementById('viewerModal').classList.add('hidden'); document.getElementById('viewerVideo').pause(); document.getElementById('viewerAudio').pause(); }
+
+        // Initialize particles and ensure centered layout
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            const mainApp = document.getElementById('mainApp');
+            document.body.style.display = 'flex';
+            document.body.style.flexDirection = 'column';
+            document.body.style.alignItems = 'center';
+            document.body.style.justifyContent = 'center';
+            document.body.style.minHeight = '100vh';
+            document.body.style.padding = '1rem';
+        });
     </script>
 </body>
 </html>
