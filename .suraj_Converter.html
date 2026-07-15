@@ -9,56 +9,35 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #050b14; /* Deep cyber background */
+            background-color: #050b14;
             background-image: 
                 linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px);
             background-size: 40px 40px;
             color: #ecf0f1;
         }
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-        /* Custom scrollbar for the text viewer */
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #0f172a; border-radius: 4px; }
         ::-webkit-scrollbar-thumb { background: #06b6d4; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #22d3ee; }
-        
-        /* Scanline effect */
         .scanlines {
-            background: linear-gradient(
-                to bottom,
-                rgba(255,255,255,0),
-                rgba(255,255,255,0) 50%,
-                rgba(0,0,0,0.2) 50%,
-                rgba(0,0,0,0.2)
-            );
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
             background-size: 100% 4px;
             pointer-events: none;
         }
-
-        /* Pulse animation for processing */
         @keyframes pulse-cyan {
             0%, 100% { box-shadow: 0 0 15px rgba(6,182,212,0.2); }
             50% { box-shadow: 0 0 30px rgba(6,182,212,0.6); }
         }
-        .processing-fx {
-            animation: pulse-cyan 1.5s infinite;
-            border-color: #22d3ee !important;
-        }
+        .processing-fx { animation: pulse-cyan 1.5s infinite; border-color: #22d3ee !important; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4 relative">
-
     <div id="mainApp" class="bg-[#0a1120]/90 backdrop-blur-md rounded-2xl p-8 w-full max-w-md border border-cyan-500/30 shadow-[0_0_30px_rgba(6,182,212,0.15)] relative z-10 transition-all duration-300">
-        
-        <!-- Header Section -->
         <div class="text-center mb-8">
             <h1 class="text-3xl font-bold text-white mb-2 tracking-wider drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">SURAJ<span class="text-cyan-500">.CORE</span></h1>
             <p class="text-[10px] text-cyan-500/70 font-mono uppercase tracking-[0.2em] mb-5">Proprietary Base-16 Data Obfuscation & Serialization Protocol</p>
-            
-            <!-- Highly Secure Badge -->
             <div class="inline-flex items-center justify-center gap-2 text-emerald-400 text-xs font-mono bg-emerald-400/10 py-1.5 px-4 rounded-full border border-emerald-400/30 shadow-[0_0_10px_rgba(52,211,153,0.2)]">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
@@ -67,24 +46,18 @@
             </div>
         </div>
 
-        <!-- Hidden file inputs -->
-        <!-- Accepts ANY file for encoding -->
         <input type="file" id="encodeInput" class="hidden">
-        <!-- Accepts only .suraj for decoding -->
         <input type="file" id="decodeInput" accept=".suraj" class="hidden">
 
-        <!-- Action Buttons -->
         <div class="space-y-4">
-            <button onclick="requestAccess('encode')" 
-                    class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 hover:border-emerald-400 font-mono text-sm py-4 px-6 rounded-lg transition duration-200 ease-in-out shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-3">
+            <button onclick="requestAccess('encode')" class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 hover:border-emerald-400 font-mono text-sm py-4 px-6 rounded-lg transition duration-200 ease-in-out shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                 </svg>
                 ENCRYPT FILE TO .SURAJ
             </button>
 
-            <button onclick="requestAccess('decode')" 
-                    class="w-full bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 hover:border-cyan-400 font-mono text-sm py-4 px-6 rounded-lg transition duration-200 ease-in-out shadow-[0_0_15px_rgba(6,182,212,0.1)] hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] flex items-center justify-center gap-3">
+            <button onclick="requestAccess('decode')" class="w-full bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 hover:border-cyan-400 font-mono text-sm py-4 px-6 rounded-lg transition duration-200 ease-in-out shadow-[0_0_15px_rgba(6,182,212,0.1)] hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] flex items-center justify-center gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -93,7 +66,6 @@
             </button>
         </div>
 
-        <!-- Status Display -->
         <div class="mt-8 text-center bg-black/40 py-3 rounded-lg border border-gray-800">
             <p id="statusMsg" class="text-[11px] font-mono text-cyan-400/60 break-words px-2">AWAITING DIRECTIVE...</p>
         </div>
@@ -105,22 +77,16 @@
         </p>
     </div>
 
-    <!-- Password Security Modal -->
     <div id="pwdModal" class="fixed inset-0 bg-black bg-opacity-90 backdrop-blur-lg hidden flex items-center justify-center p-4 z-50">
         <div class="bg-[#050b14] rounded-xl shadow-[0_0_50px_rgba(239,68,68,0.2)] p-8 max-w-sm w-full border border-red-500/40 text-center relative overflow-hidden">
             <div class="absolute inset-0 scanlines opacity-50"></div>
-            
             <div class="relative z-10">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-red-500 mb-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
                 <h3 class="text-red-400 font-mono text-lg mb-6 font-bold tracking-widest">SECURITY CLEARANCE</h3>
-                
-                <input type="password" id="pwdInput" placeholder="ENTER PROTOCOL KEY" 
-                       class="w-full bg-[#0b1120] text-emerald-400 font-mono text-center p-4 rounded-lg border border-red-500/50 focus:outline-none focus:border-red-400 focus:shadow-[0_0_15px_rgba(239,68,68,0.3)] mb-2 tracking-[0.3em]">
-                
+                <input type="password" id="pwdInput" placeholder="ENTER PROTOCOL KEY" class="w-full bg-[#0b1120] text-emerald-400 font-mono text-center p-4 rounded-lg border border-red-500/50 focus:outline-none focus:border-red-400 focus:shadow-[0_0_15px_rgba(239,68,68,0.3)] mb-2 tracking-[0.3em]">
                 <p id="pwdError" class="text-red-500 text-[10px] font-mono font-bold tracking-wider hidden mb-2 mt-2">ACCESS DENIED. UNAUTHORIZED KEY.</p>
-                
                 <div class="flex gap-4 mt-8">
                     <button onclick="cancelAccess()" class="flex-1 bg-gray-900 hover:bg-gray-800 text-gray-400 border border-gray-700 py-3 rounded-lg font-mono text-xs font-bold transition tracking-wider">ABORT</button>
                     <button onclick="verifyAccess()" class="flex-1 bg-red-500/20 hover:bg-red-500/40 text-red-400 border border-red-500/50 py-3 rounded-lg font-mono text-xs font-bold transition shadow-[0_0_10px_rgba(239,68,68,0.2)] tracking-wider">AUTHORIZE</button>
@@ -129,11 +95,8 @@
         </div>
     </div>
 
-    <!-- Secure Viewer Modal (Text, Video, Audio) -->
     <div id="viewerModal" class="fixed inset-0 bg-black bg-opacity-90 backdrop-blur-xl hidden flex flex-col items-center justify-center p-4 z-50">
         <div class="bg-[#050b14] rounded-xl w-full max-w-4xl border border-cyan-500/40 flex flex-col max-h-[90vh] shadow-[0_0_40px_rgba(6,182,212,0.2)] overflow-hidden relative">
-            
-            <!-- Modal Header -->
             <div class="px-6 py-4 border-b border-cyan-500/20 flex justify-between items-center bg-cyan-500/10 z-10">
                 <div class="flex items-center gap-3">
                     <span class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></span>
@@ -145,19 +108,10 @@
                     </svg>
                 </button>
             </div>
-            
-            <!-- Modal Body (Dynamic Media Containers) -->
             <div class="flex-grow overflow-auto flex flex-col relative p-6 items-center justify-center min-h-[50vh]">
                 <div class="absolute inset-0 scanlines z-10"></div>
-                
-                <!-- Text Container -->
-                <textarea id="viewerText" readonly 
-                          class="hidden w-full h-full min-h-[50vh] bg-[#0b1120] text-emerald-400 font-mono text-sm p-6 rounded-lg focus:outline-none resize-none border border-cyan-500/20 shadow-inner relative z-20"></textarea>
-                
-                <!-- Video Container -->
+                <textarea id="viewerText" readonly class="hidden w-full h-full min-h-[50vh] bg-[#0b1120] text-emerald-400 font-mono text-sm p-6 rounded-lg focus:outline-none resize-none border border-cyan-500/20 shadow-inner relative z-20"></textarea>
                 <video id="viewerVideo" controls class="hidden max-w-full max-h-[70vh] rounded-lg shadow-[0_0_20px_rgba(6,182,212,0.3)] relative z-20"></video>
-                
-                <!-- Audio Container -->
                 <div id="viewerAudioContainer" class="hidden w-full max-w-md bg-[#0b1120] p-6 rounded-xl border border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.2)] relative z-20 flex flex-col items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-cyan-400 mb-6 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
@@ -165,8 +119,6 @@
                     <audio id="viewerAudio" controls class="w-full"></audio>
                 </div>
             </div>
-            
-            <!-- Modal Footer -->
             <div class="px-6 py-4 border-t border-cyan-500/20 flex justify-between items-center bg-cyan-500/10 z-10">
                 <span class="text-[10px] text-cyan-500/50 font-mono">FILE DECRYPTED IN TEMPORARY MEMORY</span>
                 <button onclick="closeViewer()" class="bg-red-500/10 hover:bg-red-500/30 text-red-400 border border-red-500/50 font-mono text-xs py-2 px-6 rounded transition tracking-widest font-bold">
@@ -177,18 +129,13 @@
     </div>
 
     <script>
-        // DOM Elements
         const encodeInput = document.getElementById('encodeInput');
         const decodeInput = document.getElementById('decodeInput');
         const statusMsg = document.getElementById('statusMsg');
         const mainApp = document.getElementById('mainApp');
-        
-        // Security Elements
         const pwdModal = document.getElementById('pwdModal');
         const pwdInput = document.getElementById('pwdInput');
         const pwdError = document.getElementById('pwdError');
-        
-        // Viewer Elements
         const viewerModal = document.getElementById('viewerModal');
         const viewerTitle = document.getElementById('viewerTitle');
         const viewerText = document.getElementById('viewerText');
@@ -196,22 +143,15 @@
         const viewerAudio = document.getElementById('viewerAudio');
         const viewerAudioContainer = document.getElementById('viewerAudioContainer');
 
-        // State
-        let pendingAction = null; // 'encode' or 'decode'
-        
-        // HASHED PASSWORD: The string "SDPAP" has been irreversibly converted to this integer hash.
-        // It is no longer visible as plain text in the source code!
+        let pendingAction = null;
         const PROTOCOL_HASH = 78757006; 
-        const DELIMITER = "|||SURAJ_PROTOCOL_V2|||"; // Secure boundary for metadata
+        const DELIMITER = "|||SURAJ_PROTOCOL_V2|||";
 
-        // --- Security Handlers ---
-        
-        // Secure Hashing Algorithm (Converts text to a 32-bit integer)
         function generateHash(str) {
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
                 hash = (hash << 5) - hash + str.charCodeAt(i);
-                hash |= 0; // Force to 32bit integer to prevent overflow
+                hash |= 0;
             }
             return hash;
         }
@@ -230,59 +170,39 @@
         }
 
         function verifyAccess() {
-            // Hash the user's input before comparing it!
             const inputHash = generateHash(pwdInput.value);
-            
             if (inputHash === PROTOCOL_HASH) {
-                // Success! Proceed to requested file action
                 pwdModal.classList.add('hidden');
-                if (pendingAction === 'encode') {
-                    encodeInput.click();
-                } else if (pendingAction === 'decode') {
-                    decodeInput.click();
-                }
+                if (pendingAction === 'encode') encodeInput.click();
+                else if (pendingAction === 'decode') decodeInput.click();
             } else {
-                // Failure
                 pwdError.classList.remove('hidden');
                 pwdInput.value = '';
                 pwdInput.focus();
             }
         }
 
-        // Allow pressing Enter to submit password
         pwdInput.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                verifyAccess();
-            }
+            if (e.key === 'Enter') verifyAccess();
         });
 
-        // --- Helper Functions for Hex/String Conversions ---
-
-        // Converts a normal string to a safe Base-16 Hex string
         function stringToHex(str) {
             const encoder = new TextEncoder();
             const view = encoder.encode(str); 
             let hex = '';
-            for (let i = 0; i < view.length; i++) {
-                hex += view[i].toString(16).padStart(2, '0');
-            }
+            for (let i = 0; i < view.length; i++) hex += view[i].toString(16).padStart(2, '0');
             return hex;
         }
 
-        // Converts a Hex string back to the original string
         function hexToString(hex) {
-            if (hex.length % 2 !== 0) throw new Error("Corrupted File: Invalid Hex Length");
+            if (hex.length % 2 !== 0) throw new Error("Invalid");
             const bytes = new Uint8Array(hex.length / 2);
-            for (let i = 0; i < hex.length; i += 2) {
-                bytes[i / 2] = parseInt(hex.substring(i, i + 2), 16);
-            }
-            const decoder = new TextDecoder();
-            return decoder.decode(bytes);
+            for (let i = 0; i < hex.length; i += 2) bytes[i / 2] = parseInt(hex.substring(i, i + 2), 16);
+            return new TextDecoder().decode(bytes);
         }
 
         function updateStatus(message, isError = false, isProcessing = false) {
             statusMsg.textContent = message;
-            
             if (isProcessing) {
                 statusMsg.className = "text-[11px] font-mono text-yellow-400 font-bold tracking-widest animate-pulse";
                 mainApp.classList.add('processing-fx');
@@ -295,182 +215,115 @@
             }
         }
 
-        // --- Encode Logic (ANY FILE -> SURAJ) ---
         encodeInput.addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (!file) return;
-
-            updateStatus("ENCRYPTING... PLEASE WAIT", false, true);
-
-            // Read the file as a Base64 Data URL so we can capture ANY binary file type safely
+            updateStatus("ENCRYPTING...", false, true);
             const reader = new FileReader();
-            
             reader.onload = function(e) {
-                // We use setTimeout to allow the browser UI to update the "Please wait" message 
-                // before locking up the CPU with heavy hex conversion.
                 setTimeout(() => {
                     try {
-                        const dataUrl = e.target.result; // data:mime/type;base64,.....
-                        
-                        // Structure: OriginalFileName + Delimiter + FileBase64Data
-                        const payloadStr = file.name + DELIMITER + dataUrl;
-                        
-                        // Convert combined metadata and data into Hexadecimal
+                        const payloadStr = file.name + DELIMITER + e.target.result;
                         const hexData = stringToHex(payloadStr);
-                        
-                        // Generate new filename
                         const baseName = file.name.replace(/\.[^/.]+$/, "");
                         const newFileName = baseName + ".suraj";
-                        
-                        // Download trigger
                         const blob = new Blob([hexData], { type: "text/plain" });
-                        const downloadUrl = URL.createObjectURL(blob);
+                        const url = URL.createObjectURL(blob);
                         const a = document.createElement('a');
-                        a.href = downloadUrl;
+                        a.href = url;
                         a.download = newFileName;
                         document.body.appendChild(a);
                         a.click();
-                        
                         document.body.removeChild(a);
-                        URL.revokeObjectURL(downloadUrl);
-                        
-                        updateStatus(`ENCRYPTION COMPLETE: ${newFileName}`);
+                        URL.revokeObjectURL(url);
+                        updateStatus(`ENCRYPTED: ${newFileName}`);
                     } catch (error) {
-                        updateStatus(`ENCRYPTION FAILED: File too large or memory error.`, true);
+                        updateStatus(`ERROR`, true);
                     }
                     encodeInput.value = ''; 
                 }, 100);
             };
-            
-            reader.onerror = function() {
-                updateStatus("SYSTEM ERROR READING FILE.", true);
-            };
-            
-            reader.readAsDataURL(file); // This handles images, zip, video, audio seamlessly!
+            reader.readAsDataURL(file);
         });
 
-        // --- Decode Logic (SURAJ -> Viewer OR Download) ---
         decodeInput.addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (!file) return;
-
-            updateStatus("DECRYPTING... PLEASE WAIT", false, true);
-
+            updateStatus("DECRYPTING...", false, true);
             const reader = new FileReader();
-            
             reader.onload = function(e) {
                 setTimeout(() => {
                     try {
                         const hexData = e.target.result.trim(); 
                         const decodedPayload = hexToString(hexData);
-                        
-                        // Split payload into Filename and DataURL
                         const parts = decodedPayload.split(DELIMITER);
-                        if (parts.length !== 2) throw new Error("Invalid Format");
-
+                        if (parts.length !== 2) throw new Error("Format");
                         const originalName = parts[0];
                         const dataUrl = parts[1];
-
-                        // Determine MIME type from the data URL
                         const mimeMatch = dataUrl.match(/^data:(.*?);/);
                         const mimeType = mimeMatch ? mimeMatch[1].toLowerCase() : '';
-
-                        // Decide what to do based on file type
                         const isText = mimeType.startsWith('text/') || originalName.toLowerCase().endsWith('.txt');
-                        const isVideo = mimeType.startsWith('video/') || originalName.toLowerCase().endsWith('.mp4') || originalName.toLowerCase().endsWith('.mkv');
-                        const isAudio = mimeType.startsWith('audio/') || originalName.toLowerCase().endsWith('.mp3') || originalName.toLowerCase().endsWith('.wav');
+                        const isVideo = mimeType.startsWith('video/') || originalName.toLowerCase().endsWith('.mp4');
+                        const isAudio = mimeType.startsWith('audio/') || originalName.toLowerCase().endsWith('.mp3');
 
                         if (isText) {
-                            // DataURLs encode text in base64, so we can fetch it to decode cleanly
-                            fetch(dataUrl)
-                                .then(res => res.text())
-                                .then(text => {
-                                    showInViewer('text', text, originalName);
-                                    updateStatus(`VIEWING: ${originalName}`);
-                                });
-                        } 
-                        else if (isVideo) {
+                            fetch(dataUrl).then(res => res.text()).then(text => { showInViewer('text', text, originalName); updateStatus(`VIEWING: ${originalName}`); });
+                        } else if (isVideo) {
                             showInViewer('video', dataUrl, originalName);
                             updateStatus(`VIEWING: ${originalName}`);
-                        } 
-                        else if (isAudio) {
+                        } else if (isAudio) {
                             showInViewer('audio', dataUrl, originalName);
                             updateStatus(`LISTENING: ${originalName}`);
-                        } 
-                        else {
-                            // For ALL OTHER files (images, pdfs, zips, etc.), force download the original
+                        } else {
                             const a = document.createElement('a');
                             a.href = dataUrl;
                             a.download = originalName;
                             document.body.appendChild(a);
                             a.click();
                             document.body.removeChild(a);
-                            
-                            updateStatus(`RESTORED & DOWNLOADED: ${originalName}`);
+                            updateStatus(`DOWNLOADED: ${originalName}`);
                         }
                     } catch (error) {
-                        updateStatus(`DECRYPTION FAILED. CORRUPTED OR TAMPERED FILE.`, true);
+                        updateStatus(`DECRYPTION FAILED`, true);
                     }
                     decodeInput.value = '';
                 }, 100);
             };
-            
-            reader.onerror = function() {
-                updateStatus("SYSTEM ERROR READING FILE.", true);
-            };
-            
             reader.readAsText(file);
         });
 
-        // --- Modal Viewer Controls ---
         function showInViewer(type, content, title) {
-            // Hide all displays first
             viewerText.classList.add('hidden');
             viewerVideo.classList.add('hidden');
             viewerAudioContainer.classList.add('hidden');
-
             viewerTitle.textContent = `DECRYPTED: ${title}`;
-
             if (type === 'text') {
                 viewerText.value = content;
                 viewerText.classList.remove('hidden');
-            } 
-            else if (type === 'video') {
+            } else if (type === 'video') {
                 viewerVideo.src = content;
                 viewerVideo.classList.remove('hidden');
-            } 
-            else if (type === 'audio') {
+            } else if (type === 'audio') {
                 viewerAudio.src = content;
                 viewerAudioContainer.classList.remove('hidden');
             }
-
             viewerModal.classList.remove('hidden');
         }
 
         function closeViewer() {
             viewerModal.classList.add('hidden');
-            
-            // SECURITY: Purge all data immediately upon close
             viewerText.value = ''; 
-            
-            // Stop media playback and purge sources from memory
             viewerVideo.pause();
             viewerVideo.removeAttribute('src');
             viewerVideo.load();
-            
             viewerAudio.pause();
             viewerAudio.removeAttribute('src');
             viewerAudio.load();
         }
 
-        // Close modal if user clicks outside the inner box (for both modals)
         window.addEventListener('click', function(event) {
-            if (event.target === viewerModal) {
-                closeViewer();
-            }
-            if (event.target === pwdModal) {
-                cancelAccess();
-            }
+            if (event.target === viewerModal) closeViewer();
+            if (event.target === pwdModal) cancelAccess();
         });
     </script>
 </body>
