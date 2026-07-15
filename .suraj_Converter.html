@@ -128,13 +128,13 @@
         <input type="file" id="decodeInput" accept=".suraj" class="hidden">
 
         <div class="space-y-4">
-            <button onclick="requestAccess('encode')" class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 font-mono text-sm py-4 px-6 rounded-lg transition duration-300">
+            <button onclick="requestAccess('encode')" class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 font-mono text-sm py-4 px-6 rounded-lg transition duration-200">
                 ENCRYPT FILE TO .SURAJ
             </button>
-            <button onclick="requestAccessDirectInput()" class="w-full bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/50 font-mono text-sm py-4 px-6 rounded-lg transition duration-300">
+            <button onclick="requestAccessDirectInput()" class="w-full bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/50 font-mono text-sm py-4 px-6 rounded-lg transition duration-200">
                 DIRECT TEXT INPUT
             </button>
-            <button onclick="requestAccess('decode')" class="w-full bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 font-mono text-sm py-4 px-6 rounded-lg transition duration-300">
+            <button onclick="requestAccess('decode')" class="w-full bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 font-mono text-sm py-4 px-6 rounded-lg transition duration-200">
                 DECRYPT IN SECURE VAULT
             </button>
         </div>
@@ -147,7 +147,7 @@
     <div id="pwdModal" class="fixed inset-0 bg-black bg-opacity-90 backdrop-blur-lg hidden flex items-center justify-center p-4 z-50">
         <div class="bg-[#050b14] rounded-xl p-8 max-w-sm w-full border border-red-500/40 text-center">
             <h3 class="text-red-400 font-mono text-lg mb-6 font-bold tracking-widest">SECURITY CLEARANCE</h3>
-            <input type="password" id="pwdInput" placeholder="ENTER PROTOCOL KEY" class="w-full bg-[#0b1120] text-emerald-400 font-mono text-center p-4 rounded-lg border border-red-500/50 focus:outline-none focus:border-red-400" autocomplete="off">
+            <input type="password" id="pwdInput" placeholder="ENTER PROTOCOL KEY" class="w-full bg-[#0b1120] text-emerald-400 font-mono text-center p-4 rounded-lg border border-red-500/50 focus:outline-none focus:border-red-400">
             <p id="pwdError" class="text-red-500 text-[10px] font-mono font-bold tracking-wider hidden mb-2">ACCESS DENIED.</p>
             <div class="flex gap-4 mt-8">
                 <button onclick="cancelAccess()" class="flex-1 bg-gray-900 text-gray-400 border border-gray-700 py-3 rounded-lg font-mono text-xs">ABORT</button>
@@ -161,11 +161,11 @@
             <h3 class="text-purple-400 font-mono text-lg mb-4 font-bold tracking-widest">DIRECT TEXT INPUT</h3>
             <div class="mb-4">
                 <label class="text-purple-400 text-xs font-mono mb-2 block">FILE TITLE:</label>
-                <input type="text" id="directTitle" placeholder="ENTER FILE NAME" class="w-full bg-[#0b1120] text-emerald-400 font-mono p-3 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-400" value="untitled.txt">
+                <input type="text" id="directTitle" placeholder="ENTER FILE NAME" class="w-full bg-[#0b1120] text-emerald-400 font-mono p-3 rounded-lg border border-purple-500/30 focus:outline-none focus:border-purple-400">
             </div>
             <div class="mb-4">
                 <label class="text-purple-400 text-xs font-mono mb-2 block">TEXT CONTENT:</label>
-                <textarea id="directText" class="w-full h-40 bg-[#0b1120] text-emerald-400 font-mono p-4 rounded-lg border border-purple-500/30 focus:outline-none resize-none" placeholder="PASTE TEXT HERE..."></textarea>
+                <textarea id="directText" class="w-full h-40 bg-[#0b1120] text-emerald-400 font-mono p-4 rounded-lg border border-purple-500/30 focus:outline-none resize-none" placeholder="PASTE TEXT CONTENT HERE"></textarea>
             </div>
             <div class="flex gap-4 mt-4">
                 <button onclick="closeDirectInput()" class="flex-1 bg-gray-900 text-gray-400 border border-gray-700 py-3 rounded-lg font-mono text-xs">CANCEL</button>
@@ -193,7 +193,7 @@
 
     <script>
         // Enhanced security with SHA-256 hashing
-        const PROTOCOL_HASH = "d1f4a8c3b9e2f7a1c6b3d8e2f1a4c7b0e3d6a9c2f5b8e1d4a7c0f3b6e9a2d5";
+        const PROTOCOL_HASH = "8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4";
         const DELIMITER = "|||SURAJ_PROTOCOL_V2|||";
         let pendingAction = null;
 
