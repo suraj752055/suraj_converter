@@ -9,35 +9,61 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #050b14;
-            background-image: 
-                linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
+            background-color: #030712; /* Deep void background */
             color: #ecf0f1;
+            overflow-x: hidden;
+            margin: 0;
         }
+        
+        /* Grid background layer */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image: 
+                linear-gradient(rgba(34, 211, 238, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(34, 211, 238, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
         .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #0f172a; border-radius: 4px; }
         ::-webkit-scrollbar-thumb { background: #06b6d4; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #22d3ee; }
+        
+        /* Scanline Overlay */
         .scanlines {
-            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.25));
             background-size: 100% 4px;
             pointer-events: none;
+            position: absolute;
+            inset: 0;
+            z-index: 10;
         }
+        
+        /* Processing Glow Effect */
         @keyframes pulse-cyan {
             0%, 100% { box-shadow: 0 0 15px rgba(6,182,212,0.2); }
-            50% { box-shadow: 0 0 30px rgba(6,182,212,0.6); }
+            50% { box-shadow: 0 0 35px rgba(6,182,212,0.7); }
         }
         .processing-fx { animation: pulse-cyan 1.5s infinite; border-color: #22d3ee !important; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4 relative">
-    <div id="mainApp" class="bg-[#0a1120]/90 backdrop-blur-md rounded-2xl p-8 w-full max-w-md border border-cyan-500/30 shadow-[0_0_30px_rgba(6,182,212,0.15)] relative z-10 transition-all duration-300">
+    
+    <!-- Background Elements -->
+    <div class="bg-grid"></div>
+    <canvas id="particleCanvas" class="fixed inset-0 z-0 pointer-events-none opacity-80"></canvas>
+
+    <!-- Main Application UI -->
+    <div id="mainApp" class="bg-[#0a1120]/80 backdrop-blur-xl rounded-2xl p-8 w-full max-w-md border border-cyan-500/30 shadow-[0_0_30px_rgba(6,182,212,0.15)] relative z-20 transition-all duration-300">
         <div class="text-center mb-8">
             <h1 class="text-3xl font-bold text-white mb-2 tracking-wider drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">SURAJ<span class="text-cyan-500">.CORE</span></h1>
-            <p class="text-[10px] text-cyan-500/70 font-mono uppercase tracking-[0.2em] mb-5">Proprietary Base-16 Data Obfuscation & Serialization Protocol</p>
+            <p class="text-[10px] text-cyan-500/80 font-mono uppercase tracking-[0.2em] mb-5">Proprietary Base-16 Data Obfuscation & Serialization Protocol</p>
             <div class="inline-flex items-center justify-center gap-2 text-emerald-400 text-xs font-mono bg-emerald-400/10 py-1.5 px-4 rounded-full border border-emerald-400/30 shadow-[0_0_10px_rgba(52,211,153,0.2)]">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
@@ -46,10 +72,19 @@
             </div>
         </div>
 
+        <!-- Hidden File Inputs -->
         <input type="file" id="encodeInput" class="hidden">
         <input type="file" id="decodeInput" accept=".suraj" class="hidden">
 
-        <div class="space-y-4">
+        <div class="space-y-4 relative z-20">
+            <!-- Direct Input Button -->
+            <button onclick="requestAccess('direct_encode')" class="w-full bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/50 hover:border-purple-400 font-mono text-sm py-4 px-6 rounded-lg transition duration-200 ease-in-out shadow-[0_0_15px_rgba(168,85,247,0.1)] hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] flex items-center justify-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                CUSTOM INPUT / DRAG & DROP
+            </button>
+
             <button onclick="requestAccess('encode')" class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 hover:border-emerald-400 font-mono text-sm py-4 px-6 rounded-lg transition duration-200 ease-in-out shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -66,21 +101,22 @@
             </button>
         </div>
 
-        <div class="mt-8 text-center bg-black/40 py-3 rounded-lg border border-gray-800">
+        <div class="mt-8 text-center bg-black/50 py-3 rounded-lg border border-gray-800">
             <p id="statusMsg" class="text-[11px] font-mono text-cyan-400/60 break-words px-2">AWAITING DIRECTIVE...</p>
         </div>
     </div>
 
-    <div class="mt-8 text-center z-0">
-        <p class="text-gray-600 font-mono text-xs tracking-[0.3em]">
-            ENGINEERED BY <span class="text-cyan-500 font-bold drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">SURAJ</span>
+    <div class="mt-8 text-center z-20">
+        <p class="text-gray-500 font-mono text-xs tracking-[0.3em]">
+            ENGINEERED BY <span class="text-cyan-400 font-bold drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]">SURAJ PRADHAN</span>
         </p>
     </div>
 
+    <!-- Password Verification Modal -->
     <div id="pwdModal" class="fixed inset-0 bg-black bg-opacity-90 backdrop-blur-lg hidden flex items-center justify-center p-4 z-50">
         <div class="bg-[#050b14] rounded-xl shadow-[0_0_50px_rgba(239,68,68,0.2)] p-8 max-w-sm w-full border border-red-500/40 text-center relative overflow-hidden">
-            <div class="absolute inset-0 scanlines opacity-50"></div>
-            <div class="relative z-10">
+            <div class="scanlines opacity-50"></div>
+            <div class="relative z-20">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-red-500 mb-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
@@ -95,12 +131,41 @@
         </div>
     </div>
 
-    <div id="viewerModal" class="fixed inset-0 bg-black bg-opacity-90 backdrop-blur-xl hidden flex flex-col items-center justify-center p-4 z-50">
-        <div class="bg-[#050b14] rounded-xl w-full max-w-4xl border border-cyan-500/40 flex flex-col max-h-[90vh] shadow-[0_0_40px_rgba(6,182,212,0.2)] overflow-hidden relative">
-            <div class="px-6 py-4 border-b border-cyan-500/20 flex justify-between items-center bg-cyan-500/10 z-10">
+    <!-- Direct Input Modal -->
+    <div id="directModal" class="fixed inset-0 bg-black bg-opacity-90 backdrop-blur-xl hidden flex flex-col items-center justify-center p-4 z-50">
+        <div class="bg-[#050b14] rounded-xl w-full max-w-lg border border-purple-500/40 p-8 shadow-[0_0_40px_rgba(168,85,247,0.2)] relative overflow-hidden">
+            <div class="scanlines opacity-50"></div>
+            <div class="relative z-20">
+                <h3 class="text-purple-400 font-mono text-lg mb-4 font-bold tracking-widest flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    DIRECT ENCODER
+                </h3>
+                
+                <label class="block text-xs font-mono text-purple-400/70 mb-2 tracking-wider">PAYLOAD TITLE (FILENAME)</label>
+                <input type="text" id="directTitle" placeholder="e.g. secret_data" class="w-full bg-[#0b1120] text-emerald-400 font-mono p-3 rounded border border-purple-500/30 focus:outline-none focus:border-purple-400 focus:shadow-[0_0_10px_rgba(168,85,247,0.2)] mb-4 tracking-widest relative z-30">
+                
+                <label class="block text-xs font-mono text-purple-400/70 mb-2 tracking-wider">DATA STREAM (PASTE TEXT OR DROP FILE)</label>
+                <div id="dropZone" class="w-full bg-[#0b1120] border-2 border-dashed border-purple-500/30 hover:border-purple-400 rounded-lg transition-all duration-300 relative group z-30">
+                    <textarea id="directText" placeholder="Paste your text here...&#10;&#10;[ OR DRAG & DROP ANY FILE / IMG ]" class="w-full h-40 bg-transparent text-emerald-400 font-mono text-sm p-4 focus:outline-none resize-none z-10 relative placeholder-purple-500/30"></textarea>
+                </div>
+
+                <div class="flex gap-4 mt-8 relative z-30">
+                    <button onclick="closeDirectModal()" class="flex-1 bg-gray-900 hover:bg-gray-800 text-gray-400 border border-gray-700 py-3 rounded-lg font-mono text-xs font-bold transition tracking-wider">CANCEL</button>
+                    <button onclick="processDirectEncode()" class="flex-1 bg-purple-500/20 hover:bg-purple-500/40 text-purple-400 border border-purple-500/50 py-3 rounded-lg font-mono text-xs font-bold transition shadow-[0_0_10px_rgba(168,85,247,0.2)] tracking-wider">ENCRYPT TO .SURAJ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Secure Vault Viewer Modal -->
+    <div id="viewerModal" class="fixed inset-0 bg-black bg-opacity-95 backdrop-blur-2xl hidden flex flex-col items-center justify-center p-4 z-[60]">
+        <div class="bg-[#050b14] rounded-xl w-full max-w-4xl border border-cyan-500/40 flex flex-col max-h-[90vh] shadow-[0_0_50px_rgba(6,182,212,0.3)] overflow-hidden relative">
+            <div class="px-6 py-4 border-b border-cyan-500/20 flex justify-between items-center bg-cyan-900/20 z-20">
                 <div class="flex items-center gap-3">
-                    <span class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></span>
-                    <h2 id="viewerTitle" class="text-sm font-mono text-cyan-400 font-bold tracking-wider truncate max-w-md">Secure Viewer</h2>
+                    <span class="w-3 h-3 rounded-full bg-red-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.8)]"></span>
+                    <h2 id="viewerTitle" class="text-sm font-mono text-cyan-400 font-bold tracking-wider truncate max-w-md drop-shadow-md">Secure Viewer</h2>
                 </div>
                 <button onclick="closeViewer()" class="text-cyan-500 hover:text-cyan-300 transition hover:rotate-90 duration-300">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -108,20 +173,23 @@
                     </svg>
                 </button>
             </div>
-            <div class="flex-grow overflow-auto flex flex-col relative p-6 items-center justify-center min-h-[50vh]">
-                <div class="absolute inset-0 scanlines z-10"></div>
-                <textarea id="viewerText" readonly class="hidden w-full h-full min-h-[50vh] bg-[#0b1120] text-emerald-400 font-mono text-sm p-6 rounded-lg focus:outline-none resize-none border border-cyan-500/20 shadow-inner relative z-20"></textarea>
-                <video id="viewerVideo" controls class="hidden max-w-full max-h-[70vh] rounded-lg shadow-[0_0_20px_rgba(6,182,212,0.3)] relative z-20"></video>
-                <div id="viewerAudioContainer" class="hidden w-full max-w-md bg-[#0b1120] p-6 rounded-xl border border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.2)] relative z-20 flex flex-col items-center">
+            
+            <div class="flex-grow overflow-auto flex flex-col relative p-6 items-center justify-center min-h-[50vh] bg-black/40">
+                <div class="scanlines z-10"></div>
+                <textarea id="viewerText" readonly class="hidden w-full h-full min-h-[50vh] bg-[#0b1120]/80 text-emerald-400 font-mono text-sm p-6 rounded-lg focus:outline-none resize-none border border-cyan-500/20 shadow-inner relative z-20"></textarea>
+                <video id="viewerVideo" controls class="hidden max-w-full max-h-[70vh] rounded-lg shadow-[0_0_30px_rgba(6,182,212,0.2)] relative z-20"></video>
+                <img id="viewerImage" class="hidden max-w-full max-h-[70vh] rounded-lg shadow-[0_0_30px_rgba(6,182,212,0.2)] relative z-20 object-contain">
+                <div id="viewerAudioContainer" class="hidden w-full max-w-md bg-[#0b1120]/90 p-6 rounded-xl border border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.2)] relative z-20 flex flex-col items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-cyan-400 mb-6 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                     </svg>
-                    <audio id="viewerAudio" controls class="w-full"></audio>
+                    <audio id="viewerAudio" controls class="w-full outline-none"></audio>
                 </div>
             </div>
-            <div class="px-6 py-4 border-t border-cyan-500/20 flex justify-between items-center bg-cyan-500/10 z-10">
-                <span class="text-[10px] text-cyan-500/50 font-mono">FILE DECRYPTED IN TEMPORARY MEMORY</span>
-                <button onclick="closeViewer()" class="bg-red-500/10 hover:bg-red-500/30 text-red-400 border border-red-500/50 font-mono text-xs py-2 px-6 rounded transition tracking-widest font-bold">
+            
+            <div class="px-6 py-4 border-t border-cyan-500/20 flex justify-between items-center bg-cyan-900/20 z-20">
+                <span class="text-[10px] text-cyan-500/70 font-mono tracking-widest uppercase">File Decrypted in Temporary Volatile Memory</span>
+                <button onclick="closeViewer()" class="bg-red-500/10 hover:bg-red-500/30 text-red-400 border border-red-500/50 font-mono text-xs py-2 px-6 rounded transition tracking-widest font-bold shadow-[0_0_10px_rgba(239,68,68,0.2)]">
                     PURGE CACHE & CLOSE
                 </button>
             </div>
@@ -129,24 +197,104 @@
     </div>
 
     <script>
+        // DOM Elements
         const encodeInput = document.getElementById('encodeInput');
         const decodeInput = document.getElementById('decodeInput');
         const statusMsg = document.getElementById('statusMsg');
         const mainApp = document.getElementById('mainApp');
+        
         const pwdModal = document.getElementById('pwdModal');
         const pwdInput = document.getElementById('pwdInput');
         const pwdError = document.getElementById('pwdError');
+        
         const viewerModal = document.getElementById('viewerModal');
         const viewerTitle = document.getElementById('viewerTitle');
         const viewerText = document.getElementById('viewerText');
         const viewerVideo = document.getElementById('viewerVideo');
+        const viewerImage = document.getElementById('viewerImage');
         const viewerAudio = document.getElementById('viewerAudio');
         const viewerAudioContainer = document.getElementById('viewerAudioContainer');
 
+        const directModal = document.getElementById('directModal');
+        const directTitle = document.getElementById('directTitle');
+        const directText = document.getElementById('directText');
+        const dropZone = document.getElementById('dropZone');
+        
+        // State
         let pendingAction = null;
+        let droppedFile = null;
         const PROTOCOL_HASH = 78757006; 
         const DELIMITER = "|||SURAJ_PROTOCOL_V2|||";
 
+        // Cyber-Network Particle System
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.5 + 0.5;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.color = Math.random() > 0.5 ? 'rgba(34, 211, 238, 0.6)' : 'rgba(16, 185, 129, 0.4)'; 
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            let numParticles = Math.min((canvas.width * canvas.height) / 12000, 100); 
+            for (let i = 0; i < numParticles; i++) particles.push(new Particle());
+        }
+        initParticles();
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                // Draw connecting network lines
+                for (let j = i; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 120) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(34, 211, 238, ${0.15 - distance/800})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // Core Security Hash
         function generateHash(str) {
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
@@ -156,6 +304,7 @@
             return hash;
         }
 
+        // Access Controls
         function requestAccess(action) {
             pendingAction = action;
             pwdInput.value = '';
@@ -175,6 +324,7 @@
                 pwdModal.classList.add('hidden');
                 if (pendingAction === 'encode') encodeInput.click();
                 else if (pendingAction === 'decode') decodeInput.click();
+                else if (pendingAction === 'direct_encode') openDirectModal();
             } else {
                 pwdError.classList.remove('hidden');
                 pwdInput.value = '';
@@ -186,6 +336,7 @@
             if (e.key === 'Enter') verifyAccess();
         });
 
+        // Hexadecimal Conversion Algorithms
         function stringToHex(str) {
             const encoder = new TextEncoder();
             const view = encoder.encode(str); 
@@ -215,6 +366,28 @@
             }
         }
 
+        // Base Encryption Process
+        function performEncryption(fileNameWithExt, dataUrl, baseName) {
+            try {
+                const payloadStr = fileNameWithExt + DELIMITER + dataUrl;
+                const hexData = stringToHex(payloadStr);
+                const newFileName = baseName + ".suraj";
+                const blob = new Blob([hexData], { type: "text/plain" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = newFileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                updateStatus(`ENCRYPTED: ${newFileName}`);
+            } catch (error) {
+                updateStatus(`ERROR`, true);
+            }
+        }
+
+        // Standard File Encoding
         encodeInput.addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -222,30 +395,76 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 setTimeout(() => {
-                    try {
-                        const payloadStr = file.name + DELIMITER + e.target.result;
-                        const hexData = stringToHex(payloadStr);
-                        const baseName = file.name.replace(/\.[^/.]+$/, "");
-                        const newFileName = baseName + ".suraj";
-                        const blob = new Blob([hexData], { type: "text/plain" });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = newFileName;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
-                        updateStatus(`ENCRYPTED: ${newFileName}`);
-                    } catch (error) {
-                        updateStatus(`ERROR`, true);
-                    }
+                    const baseName = file.name.replace(/\.[^/.]+$/, "");
+                    performEncryption(file.name, e.target.result, baseName);
                     encodeInput.value = ''; 
                 }, 100);
             };
             reader.readAsDataURL(file);
         });
 
+        // Direct Input / Drag and Drop Logic
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('bg-purple-900/30', 'border-purple-400');
+        });
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('bg-purple-900/30', 'border-purple-400');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('bg-purple-900/30', 'border-purple-400');
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                droppedFile = e.dataTransfer.files[0];
+                directTitle.value = droppedFile.name.replace(/\.[^/.]+$/, ""); 
+                directText.value = `[ FILE LOADED: ${droppedFile.name} ]\nSize: ${(droppedFile.size / 1024).toFixed(2)} KB`;
+                directText.readOnly = true;
+                directText.classList.add('text-purple-300');
+            }
+        });
+
+        function openDirectModal() {
+            directModal.classList.remove('hidden');
+            droppedFile = null;
+            directText.value = '';
+            directTitle.value = '';
+            directText.readOnly = false;
+            directText.classList.remove('text-purple-300');
+        }
+
+        function closeDirectModal() {
+            directModal.classList.add('hidden');
+        }
+
+        function processDirectEncode() {
+            let title = directTitle.value.trim();
+            if (!title) title = "custom_payload";
+
+            updateStatus("ENCRYPTING...", false, true);
+            closeDirectModal();
+
+            setTimeout(() => {
+                if (droppedFile) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const ext = droppedFile.name.includes('.') ? '.' + droppedFile.name.split('.').pop() : '';
+                        performEncryption(title + ext, e.target.result, title);
+                    };
+                    reader.readAsDataURL(droppedFile);
+                } else {
+                    const textContent = directText.value;
+                    const textBlob = new Blob([textContent], { type: 'text/plain' });
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        performEncryption(title + ".txt", e.target.result, title);
+                    };
+                    reader.readAsDataURL(textBlob);
+                }
+            }, 100);
+        }
+
+        // Decoding Logic
         decodeInput.addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -265,6 +484,7 @@
                         const isText = mimeType.startsWith('text/') || originalName.toLowerCase().endsWith('.txt');
                         const isVideo = mimeType.startsWith('video/') || originalName.toLowerCase().endsWith('.mp4');
                         const isAudio = mimeType.startsWith('audio/') || originalName.toLowerCase().endsWith('.mp3');
+                        const isImage = mimeType.startsWith('image/') || originalName.toLowerCase().match(/\.(jpg|jpeg|png|gif|webp|svg)$/);
 
                         if (isText) {
                             fetch(dataUrl).then(res => res.text()).then(text => { showInViewer('text', text, originalName); updateStatus(`VIEWING: ${originalName}`); });
@@ -274,7 +494,11 @@
                         } else if (isAudio) {
                             showInViewer('audio', dataUrl, originalName);
                             updateStatus(`LISTENING: ${originalName}`);
+                        } else if (isImage) {
+                            showInViewer('image', dataUrl, originalName);
+                            updateStatus(`VIEWING: ${originalName}`);
                         } else {
+                            // Unsupported media format, trigger native secure download
                             const a = document.createElement('a');
                             a.href = dataUrl;
                             a.download = originalName;
@@ -295,8 +519,10 @@
         function showInViewer(type, content, title) {
             viewerText.classList.add('hidden');
             viewerVideo.classList.add('hidden');
+            viewerImage.classList.add('hidden');
             viewerAudioContainer.classList.add('hidden');
             viewerTitle.textContent = `DECRYPTED: ${title}`;
+            
             if (type === 'text') {
                 viewerText.value = content;
                 viewerText.classList.remove('hidden');
@@ -306,6 +532,9 @@
             } else if (type === 'audio') {
                 viewerAudio.src = content;
                 viewerAudioContainer.classList.remove('hidden');
+            } else if (type === 'image') {
+                viewerImage.src = content;
+                viewerImage.classList.remove('hidden');
             }
             viewerModal.classList.remove('hidden');
         }
@@ -316,14 +545,17 @@
             viewerVideo.pause();
             viewerVideo.removeAttribute('src');
             viewerVideo.load();
+            viewerImage.removeAttribute('src');
             viewerAudio.pause();
             viewerAudio.removeAttribute('src');
             viewerAudio.load();
         }
 
+        // Global Event Listeners
         window.addEventListener('click', function(event) {
             if (event.target === viewerModal) closeViewer();
             if (event.target === pwdModal) cancelAccess();
+            if (event.target === directModal) closeDirectModal();
         });
     </script>
 </body>
